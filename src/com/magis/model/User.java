@@ -8,6 +8,7 @@ public class User {
 
 
 	String name="";
+	String testPaul="";
 	String surname="";
 	String roleName="";
 	String roles="";
