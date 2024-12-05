@@ -5,6 +5,7 @@ public class User {
 	String userName="";
 	String password ="";
 	String name="";
+	String testPaul="";
 	String surname="";
 	String roleName="";
 	String roles="";
