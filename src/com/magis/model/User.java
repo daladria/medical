@@ -4,6 +4,7 @@ public class User {
 
 	String userName="";
 	String password ="";
+	String test ="";
 	String name="";
 	String surname="";
 	String roleName="";
