@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//WebContent/WEB-INF/jsp/admin/userOperations.jsp=UTF-8
+encoding//WebContent/WEB-INF/jsp/user/my_profile.jsp=UTF-8
+encoding//resources/messages_en.properties=UTF-8
+encoding//resources/messages_tr.properties=UTF-8
+encoding//src/com/magis/schedulers/MailCron.java=UTF-8
+encoding//src/com/magis/session/controller/HospitalController.java=UTF-8
+encoding//src/com/magis/session/controller/MyProfileController.java=UTF-8
+encoding//src/com/magis/session/controller/ServiceControllerWithHttp.java=UTF-8
+encoding//src/com/magis/session/controller/UserOperationsController.java=UTF-8
+encoding//src/com/magis/session/controller/WebController.java=UTF-8

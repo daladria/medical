@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:cql="http://www.springframework.org/schema/data/cql"
+	xmlns:cassandra="http://www.springframework.org/schema/data/cassandra"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+  	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/cql
+	https://www.springframework.org/schema/cql/spring-cql.xsd
+	http://www.springframework.org/schema/data/cassandra
+    https://www.springframework.org/schema/data/cassandra/spring-cassandra.xsd">
+	<mvc:annotation-driven/> 
+
+
+
+	
+	<mvc:resources mapping="/jsLib/**" location="/jsLib/"/>
+<!--  	
+ 	<bean id="users" class="com.magis.schedulers.Users">
+		<property name="parameters" ref="applicationParameters"/>
+	</bean> 
+-->	
+	<bean id="applicationParameters" class="com.magis.schedulers.ApplicationParameters">
+		<property name="executeSqls" ref="executeSqls"/>
+ 	</bean>
+ 		
+	<bean id="webController" class="com.magis.session.controller.WebController">
+		<property name="parameters" ref="applicationParameters"/>
+		<property name="executeSqls" ref="executeSqls"/>
+		<property name="messageSource" ref="messageSource"/>
+	</bean>
+
+	<bean id="userOperationsController" class="com.magis.session.controller.UserOperationsController">
+		<property name="parameters" ref="applicationParameters"/>
+		<property name="executeSqls" ref="executeSqls"/>
+		<property name="messageSource" ref="messageSource"/>
+	</bean>
+
+
+	<bean id="hospitalController" class="com.magis.session.controller.HospitalController">
+		<property name="parameters" ref="applicationParameters"/>
+		<property name="executeSqls" ref="executeSqls"/>
+		<property name="messageSource" ref="messageSource"/>
+	</bean>
+
+	<bean id="myProfileController" class="com.magis.session.controller.MyProfileController">
+		<property name="parameters" ref="applicationParameters"/>
+		<property name="executeSqls" ref="executeSqls"/>
+		<property name="messageSource" ref="messageSource"/>
+	</bean>
+	
+	<bean id="getBinaries" class="com.magis.session.controller.GetBinaries">
+		<property name="parameters" ref="applicationParameters"/>
+		<property name="executeSqls" ref="executeSqls"/>
+		<property name="messageSource" ref="messageSource"/>
+	</bean>
+	
+	<bean id="serviceControllerWithHttp" class="com.magis.session.controller.ServiceControllerWithHttp">
+		<property name="parameters" ref="applicationParameters"/>
+		<property name="executeSqls" ref="executeSqls"/>
+	</bean>
+	
+	<task:scheduled-tasks>
+		<task:scheduled ref="applicationParameters" method="refreshCache" cron="0/1 * * * * ?"></task:scheduled>
+	</task:scheduled-tasks> 
+
+<!--   	
+	<task:scheduled-tasks>
+		<task:scheduled ref="users" method="clearSessions" cron="0/1 * * * * ?"></task:scheduled>
+	</task:scheduled-tasks> 
+-->
+
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreResourceNotFound" value="true" />
+        <property name="locations">
+            <list>
+				<value>file:///#{systemProperties['app.conf.dir']}/medical/conf/application.properties</value>
+<!--              	<value>classpath:application.properties</value> 
+                <value>file://home/ddddd/conf/application.properties</value> -->
+            </list>
+        </property>
+    </bean> 	
+
+ 
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+	  <property name="poolName" value="${jdbc.hikari.poolName}" />
+	  <property name="dataSourceClassName" value="${jdbc.hikari.driverClassName}"/>
+	  <property name="minimumIdle" value="${jdbc.MinumumIdleConnectionSize}"/>
+	  <property name="maximumPoolSize" value="${jdbc.MaximumConnectionSize}" />
+	  <property name="autoCommit" value="true"/>
+	  <property name="connectionTestQuery" value ="select 1"/>
+	  <property name="maxLifetime" value="1800000" />
+	  <property name="idleTimeout" value="600000" />
+
+ 	  <property name="dataSourceProperties">
+	   <props>
+	     <prop key="url">${jdbc.url}</prop>
+	     <prop key="user">${jdbc.username}</prop>
+	     <prop key="password">${jdbc.password}</prop>
+	   </props>
+	  </property>
+	</bean>
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+	  <constructor-arg ref="hikariConfig" />
+	</bean> 
+
+
+ 	<bean id="executeSqls" class="com.magis.dao.interfaces.ExecuteSqls">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				 <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/> 
+					<bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/> 
+					<bean class="org.springframework.http.converter.FormHttpMessageConverter"/> 
+	 				<bean class = "org.springframework.http.converter.StringHttpMessageConverter">
+	                <property name="supportedMediaTypes" value = "text/plain;charset=UTF-8" />
+	                <property name="writeAcceptCharset" value = "false"/>
+	            </bean>
+					
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter">
+						                <property name="supportedMediaTypes" value = "application/json;charset=UTF-8" />
+						                <property name="defaultCharset" value = "UTF-8"/>
+					
+					</bean> 
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+
+			</list>
+		</property>
+	</bean>
+
+<!-- Localization definitions begin -->
+
+ <bean id="messageSource"
+    class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    <property name="basename" value="classpath:messages" />
+    <property name="defaultEncoding" value="UTF-8"/>
+</bean>
+ 
+	<mvc:interceptors>
+		<bean
+			class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="lang" />
+		</bean>
+	</mvc:interceptors>
+ 
+<bean id="localeResolver"
+    class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+    <property name="defaultLocale" value="tr"/>
+</bean>
+  <!-- Localization definitions End-->
+ 
+
+ 	<bean id="viewResolverwithoutTiles"
+        class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass"
+            value="org.springframework.web.servlet.view.JstlView" />
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+
+	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"> 
+    	<property name="maxUploadSize" value="5000000000" /> 
+	</bean>
+
+
+</beans>

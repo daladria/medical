@@ -1,0 +1,96 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:task="http://www.springframework.org/schema/task"
+  
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-5.4.xsd
+		   http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd">
+
+  
+	<http auto-config="true" create-session="never">
+<!-- 		<csrf token-repository-ref="myRequestCsrfTokenRepository"/> -->
+<!-- 		<csrf token-repository-ref="org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository"/>
+	<intercept-url pattern="/asmx/{applicationName}/{pathVar}/**" access="isAnonymous()" />
+ -->	 
+
+ 	<intercept-url pattern="/sneat" access="isAnonymous()" />
+
+	<intercept-url pattern="/jsLib/**" access="permitAll()" />	
+	<intercept-url pattern="/fileUpload*" access="isAnonymous()" />
+	<intercept-url pattern="/staticcontent" access="isAnonymous()" />
+	<intercept-url pattern="/login*" access="isAnonymous()" />
+	<intercept-url pattern="/index*" access="isAnonymous()" />
+	<intercept-url pattern="/getRequest" access="isAnonymous()" />
+
+	<intercept-url pattern="/getWebRequest" access="isAnonymous()" />
+	<intercept-url pattern="/getBin" access="isAnonymous()" />
+	<intercept-url pattern="/getBinPdf" access="isAnonymous()" />
+	<intercept-url pattern="/getImg" access="isAnonymous()" />
+	<intercept-url pattern="/getVideo" access="isAnonymous()" />
+
+    <intercept-url pattern="/**" access="isAuthenticated()"/>
+    <form-login login-page='/login' 
+    	default-target-url="/dashboard"
+      	authentication-failure-url="/login?error=true" />
+    <logout logout-success-url="/login" />
+
+ 		<intercept-url pattern='/' access='isAnonymous()' /> 
+ 		<csrf disabled="true"/>
+<!--  		
+		<headers>
+       		<header name="Access-Control-Allow-Origin" value="http://localhost:42010"/>
+     		<header name="Access-Control-Allow-Methods" value="POST,GET,OPTIONS,DELETE"/>
+     		<header name="Access-Control-Allow-Headers" value="Content-Type, authorization, x-requested-with"/>
+     		<header name="Access-Control-Allow-Credentials" value="true"/>
+    	</headers>
+    	 -->
+    	
+<!--   		<session-management>
+			<concurrency-control max-sessions="1"  expired-url="/invalidSession.html"  error-if-maximum-exceeded="false" /> eğer false olursa birincisi duser
+		</session-management> -->
+	</http>
+
+	<authentication-manager>
+		<authentication-provider  ref="customAuthenticationProvider" />
+	</authentication-manager>
+
+	<beans:bean id="customAuthenticationProvider" class="com.magis.security.CustomAuthenticationProvider">
+		<beans:property name="executeSqls" ref="executeSqls"/>
+	</beans:bean>  	
+	
+	
+	<beans:bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <beans:property name="ignoreResourceNotFound" value="true" />
+        <beans:property name="locations">
+            <beans:list>
+				<beans:value>file:///#{systemProperties['app.conf.dir']}/medical/conf/application.properties</beans:value>
+<!--              	<beans:value>classpath:application.properties</beans:value> 
+                <beans:value>file://home/ddddd/conf/application.properties</beans:value> -->
+            </beans:list>
+        </beans:property>
+    </beans:bean> 	
+    
+    <beans:bean id="dataSource" class="com.magis.dao.interfaces.CustomDataSource">
+      <beans:property name="driverClassName" value="${jdbc.driverClassName}"/>
+      <beans:property name="url" value="${jdbc.url}"/>
+      <beans:property name="username"  value="${jdbc.username}"/>
+      <beans:property name="password" value="${jdbc.password}"/>
+      <beans:property name="minIdle" value="${jdbc.MinumumIdleConnectionSize}"/>
+	  <beans:property name="initialSize" value="${jdbc.initialConnectionSize}" />
+      <beans:property name="maxTotal" value="${jdbc.MaximumConnectionSize}" />
+      <beans:property name="defaultAutoCommit" value="true"/>
+      <beans:property name="testOnBorrow" value ="true"/>
+      <beans:property name="validationQuery" value ="select 1"/>
+      <beans:property name="testWhileIdle" value ="true"/>
+      <beans:property name="timeBetweenEvictionRunsMillis" value ="60000"/>   
+    </beans:bean>
+
+ 	<beans:bean id="executeSqls" class="com.magis.dao.interfaces.ExecuteSqls">
+		<beans:property name="dataSource" ref="dataSource" />
+	</beans:bean>
+	
+	
+</beans:beans>

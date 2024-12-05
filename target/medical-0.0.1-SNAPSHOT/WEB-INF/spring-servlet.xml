@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:cql="http://www.springframework.org/schema/data/cql"
+	xmlns:cassandra="http://www.springframework.org/schema/data/cassandra"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+  	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/cql
+	https://www.springframework.org/schema/cql/spring-cql.xsd
+	http://www.springframework.org/schema/data/cassandra
+    https://www.springframework.org/schema/data/cassandra/spring-cassandra.xsd">
+	<mvc:annotation-driven/> 
+
+
+
+	
+<!-- REQUIRED: The Cassandra cluster -->
+<!--  AÇILACAK 
+	<cassandra:cluster  contact-points="${cassandra.contactpoints}" port="${cassandra.port}" >
+		 <cassandra:local-pooling-options
+			min-simultaneous-requests="${cassandra.local.min-simultaneous-requests}" 
+			max-simultaneous-requests="${cassandra.local.max-simultaneous-requests}"
+			core-connections="${cassandra.local.core-connections}" 
+			max-connections="${cassandra.local.max-connections}"/>
+		 <cassandra:remote-pooling-options
+			 min-simultaneous-requests="${cassandra.remote.min-simultaneous-requests}" 
+			 max-simultaneous-requests="${cassandra.remote.max-simultaneous-requests}"
+			 core-connections="${cassandra.remote.core-connections}" 
+			 max-connections="${cassandra.remote.max-connections}"/>
+-->
+
+<!--  <cassandra:socket-options connect-timeout-millis="5000"
+ keep-alive="true" reuse-address="true" so-linger="60" tcp-no-delay="true"
+ receive-buffer-size="65536" send-buffer-size="65536"/>
+ <cassandra:keyspace name="${cassandra.keyspace}" action="CREATE_DROP"
+ durable-writes="true"/>
+ -->
+ <!--  AÇILACAK
+	</cassandra:cluster>
+	
+-->
+	 
+<!-- REQUIRED: The Cassandra session, built from the cluster, and attaching to a keyspace -->
+<!--  AÇILACAK
+	<cassandra:session keyspace-name="${cassandra.keyspace}" id="cassandraSession"/> 
+-->
+<!-- REQUIRED: The default Cassandra mapping context used by `CassandraConverter` -->
+<!--  AÇILACAK
+	<cassandra:mapping>
+  		<cassandra:user-type-resolver keyspace-name="${cassandra.keyspace}" />
+	</cassandra:mapping>
+ -->
+<!-- REQUIRED: The default Cassandra converter used by `CassandraTemplate` -->
+<!--  AÇILACAK
+	<cassandra:converter />
+--> 
+<!-- REQUIRED: The Cassandra template is the foundation of all Spring  Data Cassandra -->
+<!--  AÇILACAK
+	<cassandra:template id="cassandraTemplate" />
+-->
+	<mvc:resources mapping="/jsLib/**" location="/jsLib/"/>
+	
+ 	<bean id="users" class="com.magis.schedulers.Users">
+		<property name="parameters" ref="applicationParameters"/>
+	</bean> 
+	
+	<bean id="serviceController" class="com.magis.restfull.controller.ServiceController">
+		<property name="parameters" ref="applicationParameters"/>
+	</bean>
+
+	<bean id="belbimVposController" class="com.magis.restfull.controller.BelbimVPOSController">
+		<property name="parameters" ref="applicationParameters"/>
+	</bean>
+<!--  
+	<bean id="evamTmobController" class="com.magis.restfull.controller.EvamTmobController">
+		<property name="parameters" ref="applicationParameters"/>
+	</bean>
+-->	
+	<bean id="belbimAsmxController" class="com.magis.restfull.controller.BelbimAsmxController">
+		<property name="parameters" ref="applicationParameters"/>
+	</bean>
+	
+	<bean id="getBinaries" class="com.magis.restfull.controller.GetBinaries">
+		<property name="parameters" ref="applicationParameters" />
+	</bean> 
+
+	<bean id="applicationParameters" class="com.magis.schedulers.ApplicationParameters">
+		<property name="executeSqls" ref="executeSqls"/>
+		<property name="users" ref="users"/>
+<!--  Açılacak		<property name="template" ref="cassandraTemplate"/> -->
+ 	</bean>
+<!-- log analyser start -->
+<!--
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail.host}" />
+        <property name="port" value="${mail.port}" />
+        <property name="username" value="${mail.username}" />
+        <property name="password" value="${mail.password}" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.transport.protocol">smtp</prop>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean id="hikariConfigForLogs" class="com.zaxxer.hikari.HikariConfig">
+	  <property name="poolName" value="${jdbc.log.hikari.poolName}" />
+	  <property name="dataSourceClassName" value="${jdbc.log.hikari.driverClassName}"/>
+	  <property name="minimumIdle" value="${jdbc.log.MinumumIdleConnectionSize}"/>
+	  <property name="maximumPoolSize" value="${jdbc.log.MaximumConnectionSize}" />
+	  <property name="autoCommit" value="true"/>
+	  <property name="connectionTestQuery" value ="select 1"/>
+	  <property name="maxLifetime" value="1800000" />
+	  <property name="idleTimeout" value="600000" />
+
+ 	  <property name="dataSourceProperties">
+	   <props>
+	     <prop key="url">${jdbc.log.url}</prop>
+	     <prop key="user">${jdbc.log.username}</prop>
+	     <prop key="password">${jdbc.log.password}</prop>
+	   </props>
+	  </property>
+	</bean>
+	
+	<bean id="dataSourceForLogs" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+	  <constructor-arg ref="hikariConfigForLogs" />
+	</bean> 
+	
+	<bean id="executeSqlsForLogs" class="com.magis.dao.interfaces.ExecuteSqls">
+		<property name="dataSource" ref="dataSourceForLogs" />
+	</bean>
+	
+	<bean id="webController" class="com.magis.session.controller.WebController">
+		<property name="parameters" ref="applicationParameters"/>
+		<property name="executeSqls" ref="executeSqls"/>
+		<property name="executeSqlsForLogs" ref="executeSqlsForLogs"/>
+	</bean>
+	
+	<bean id="serviceControllerWithHttp" class="com.magis.session.controller.ServiceControllerWithHttp">
+		<property name="parameters" ref="applicationParameters"/>
+		<property name="executeSqlsForLogs" ref="executeSqlsForLogs"/>
+	</bean>
+	
+	<bean id="processLogFiles" class="com.magis.schedulers.LogAnalyser">
+		<property name="parameters" ref="applicationParameters" />
+		<property name="mailSender" ref="mailSender" />
+		<property name="mailFrom" value="${mail.username}" />
+		<property name="executeSqls" ref="executeSqlsForLogs"/>
+	</bean> 
+
+	<task:scheduled-tasks>
+		<task:scheduled ref="processLogFiles" method="parseLogFiles" cron="0/1 * * * * ?"></task:scheduled>
+	</task:scheduled-tasks> 
+	
+	<task:scheduled-tasks>
+		<task:scheduled ref="processLogFiles" method="processReports" cron="0/1 * * * * ?"></task:scheduled>
+	</task:scheduled-tasks> 
+	
+	<task:scheduled-tasks>
+		<task:scheduled ref="processLogFiles" method="processUserReports" cron="0/1 * * * * ?"></task:scheduled>
+	</task:scheduled-tasks> 
+  	
+	<task:scheduled-tasks>
+		<task:scheduled ref="processLogFiles" method="sendEmails" cron="0/1 * * * * ?"></task:scheduled>
+	</task:scheduled-tasks> 
+
+-->
+	
+<!-- Log analyser end -->	
+	
+	<task:scheduled-tasks>
+		<task:scheduled ref="applicationParameters" method="refreshCache" cron="0/1 * * * * ?"></task:scheduled>
+	</task:scheduled-tasks> 
+
+ 	
+	<task:scheduled-tasks>
+		<task:scheduled ref="users" method="clearSessions" cron="0/1 * * * * ?"></task:scheduled>
+	</task:scheduled-tasks> 
+
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreResourceNotFound" value="true" />
+        <property name="locations">
+            <list>
+				<value>file:///#{systemProperties['app.conf.dir']}/medical/conf/application.properties</value>
+<!--              	<value>classpath:application.properties</value> 
+                <value>file://home/ddddd/conf/application.properties</value> -->
+            </list>
+        </property>
+    </bean> 	
+
+ 
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+	  <property name="poolName" value="${jdbc.hikari.poolName}" />
+	  <property name="dataSourceClassName" value="${jdbc.hikari.driverClassName}"/>
+	  <property name="minimumIdle" value="${jdbc.MinumumIdleConnectionSize}"/>
+	  <property name="maximumPoolSize" value="${jdbc.MaximumConnectionSize}" />
+	  <property name="autoCommit" value="true"/>
+	  <property name="connectionTestQuery" value ="select 1"/>
+	  <property name="maxLifetime" value="1800000" />
+	  <property name="idleTimeout" value="600000" />
+
+ 	  <property name="dataSourceProperties">
+	   <props>
+	     <prop key="url">${jdbc.url}</prop>
+	     <prop key="user">${jdbc.username}</prop>
+	     <prop key="password">${jdbc.password}</prop>
+	   </props>
+	  </property>
+	</bean>
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+	  <constructor-arg ref="hikariConfig" />
+	</bean> 
+
+
+<!--     <bean id="dataSource" class="com.magis.dao.interfaces.CustomDataSource">
+      <property name="driverClassName" value="${jdbc.driverClassName}"/>
+      <property name="url" value="${jdbc.url}"/>
+      <property name="username"  value="${jdbc.username}"/>
+      <property name="password" value="${jdbc.password}"/>
+      <property name="minIdle" value="${jdbc.MinumumIdleConnectionSize}"/>
+	  <property name="initialSize" value="${jdbc.initialConnectionSize}" />
+      <property name="maxTotal" value="${jdbc.MaximumConnectionSize}" />
+      <property name="defaultAutoCommit" value="true"/>
+      <property name="testOnBorrow" value ="true"/>
+      <property name="removeAbandonedOnBorrow" value ="true"/>
+      <property name="validationQuery" value ="select 1"/>
+      <property name="testWhileIdle" value ="true"/>
+      <property name="timeBetweenEvictionRunsMillis" value ="60000"/>   
+    </bean> -->
+
+
+ 	<bean id="executeSqls" class="com.magis.dao.interfaces.ExecuteSqls">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<!-- <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/> 
+					<bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/> 
+					<bean class="org.springframework.http.converter.FormHttpMessageConverter"/> -->
+<!-- 				<bean class = "org.springframework.http.converter.StringHttpMessageConverter">
+	                <property name="supportedMediaTypes" value = "text/plain;charset=UTF-8" />
+	                <property name="writeAcceptCharset" value = "false"/>
+	            </bean>
+					
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter">
+						                <property name="supportedMediaTypes" value = "application/json;charset=UTF-8" />
+						                <property name="defaultCharset" value = "UTF-8"/>
+					
+					</bean> -->
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+
+			</list>
+		</property>
+	</bean>
+
+<!-- Localization definitions begin -->
+
+ <bean id="messageSource"
+    class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    <property name="basename" value="classpath:messages" />
+    <property name="defaultEncoding" value="UTF-8"/>
+</bean>
+ 
+	<mvc:interceptors>
+		<bean
+			class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="lang" />
+		</bean>
+	</mvc:interceptors>
+ 
+<bean id="localeResolver"
+    class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+    <property name="defaultLocale" value="tr"/>
+</bean>
+  <!-- Localization definitions End-->
+ 
+
+ 	<bean id="viewResolverwithoutTiles"
+        class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass"
+            value="org.springframework.web.servlet.view.JstlView" />
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+
+	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver"> 
+    	<property name="maxUploadSize" value="5000000000" /> 
+	</bean>
+
+
+</beans>

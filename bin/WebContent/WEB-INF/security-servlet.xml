@@ -1,0 +1,39 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+  xmlns:beans="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:task="http://www.springframework.org/schema/task"
+  
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-4.2.xsd
+		   http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd">
+
+    
+	<http auto-config="true" create-session="always">
+<!-- 		<csrf token-repository-ref="myRequestCsrfTokenRepository"/> -->
+<!-- 		<csrf token-repository-ref="org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository"/>
+ -->	 
+ 		<intercept-url pattern='/' access='isAnonymous()' /> 
+ 		<csrf disabled="true"/>
+<!--  		
+		<headers>
+       		<header name="Access-Control-Allow-Origin" value="http://localhost:42010"/>
+     		<header name="Access-Control-Allow-Methods" value="POST,GET,OPTIONS,DELETE"/>
+     		<header name="Access-Control-Allow-Headers" value="Content-Type, authorization, x-requested-with"/>
+     		<header name="Access-Control-Allow-Credentials" value="true"/>
+    	</headers>
+    	 -->
+    	
+  		<session-management>
+			<concurrency-control max-sessions="1"  expired-url="/invalidSession.html"  error-if-maximum-exceeded="false" /> <!-- eğer false olursa birincisi duser -->
+		</session-management>
+	</http>
+
+	<authentication-manager>
+		<authentication-provider  ref="customAuthenticationProvider" />
+	</authentication-manager>
+
+	<beans:bean id="customAuthenticationProvider" class="com.magis.security.CustomAuthenticationProvider">
+	</beans:bean>  	
+</beans:beans>

@@ -1,0 +1,36 @@
+CREATE TABLE IF NOT EXISTS request_logs (
+	id text PRIMARY KEY,
+	user_name text,
+	application text,
+	command text,
+	complete_time bigint,
+	ip text,
+	request text,
+	response text,
+	session text,
+	date_time text
+);
+
+
+CREATE TABLE IF NOT EXISTS http_call_logs (
+id text PRIMARY KEY,
+url text,
+requester text,
+statusCode int,
+total_time bigint,
+execute_time bigint,
+reason text,
+method text,
+command text,
+request text,
+response text,
+session text,
+date_time text
+);
+
+insert into http_call_logs (id,url, requester, statusCode, total_time, execute_time, reason, method, command, request, response, session, date_time) values('<id>', '<url>', '<requester>', <statusCode>, <total_time>, <execute_time>,  '<reason>', '<method>', '<command>', '<request>', '<response>', '<session>','<date_time>')
+
+insert into request_logs (id, user_name, application, command, complete_time, ip, request, response, session, date_time)
+values ('<id>','<user_name>','<application>','<command>',<complete_time>,'<ip>','<request>','<response>','<session>','<date_time>');
+
+insert into request_logs (id, user_name, application, command, complete_time, ip, request, response, session, date_time) values ('<id>','<user_name>','<application>','<command>',1,'<ip>','<request>','<response>','<session>','<date_time>');

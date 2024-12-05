@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+  	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+
+	<mvc:annotation-driven/> 
+
+
+ 	<bean id="usersModel" class="com.magis.schedulers.Users">
+		<property name="parameters" ref="applicationParameters"/>
+		<property name="executeSqls" ref="executeSqls"/>
+	</bean> 
+	
+	<bean id="serviceController" class="com.magis.restful.controller.ServiceController">
+		<property name="parameters" ref="applicationParameters"/>
+		<property name="executeSqls" ref="executeSqls"/>
+<!-- 		<property name ="users" ref="UsersModel"/> -->
+	</bean>
+
+	<bean id="getBinaries" class="com.magis.restful.controller.GetBinaries">
+		<property name="executeSqls" ref="executeSqls" />
+		<property name="parameters" ref="applicationParameters" />
+	</bean>
+
+	<bean id="applicationParameters" class="com.magis.schedulers.ApplicationParameters">
+		<property name="executeSqls" ref="executeSqls"/>
+ 	</bean>
+
+ 	<task:scheduled-tasks>
+		<task:scheduled ref="applicationParameters" method="refreshMessages" cron="0/1 * * * * ?"></task:scheduled>
+	</task:scheduled-tasks>
+ 
+	<task:scheduled-tasks>
+		<task:scheduled ref="usersModel" method="clearSessions" cron="0 0/1 * * * ?"></task:scheduled>
+	</task:scheduled-tasks>
+
+	<task:scheduled-tasks>
+		<task:scheduled ref="usersModel" method="clearActivations" cron="0 0/1 * * * ?"></task:scheduled>
+	</task:scheduled-tasks>
+
+	<task:scheduled-tasks>
+		<task:scheduled ref="applicationParameters" method="refreshParameters" cron="0/1 * * * * ?"></task:scheduled>
+	</task:scheduled-tasks> 
+
+	
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="ignoreResourceNotFound" value="true" />
+        <property name="locations">
+            <list>
+				<value>file:///#{systemProperties['app.conf.dir']}application.properties</value>
+             	<value>classpath:application.properties</value> 
+                <value>file://home/etsmice/conf/application.properties</value>
+            </list>
+        </property>
+    </bean> 	
+    
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+      <property name="driverClassName" value="${jdbc.driverClassName}"/>
+      <property name="url" value="${jdbc.url}"/>
+      <property name="username"  value="${jdbc.username}"/>
+      <property name="password" value="${jdbc.password}"/>
+      <property name="minIdle" value="${jdbc.MinumumIdleConnectionSize}"/>
+	  <property name="initialSize" value="${jdbc.initialConnectionSize}" />
+      <property name="maxTotal" value="${jdbc.MaximumConnectionSize}" />
+      <property name="defaultAutoCommit" value="true"/>
+    </bean>
+
+ 	<bean id="executeSqls" class="com.magis.dao.interfaces.ExecuteSqls">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<!-- <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/> 
+					<bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/> 
+					<bean class="org.springframework.http.converter.FormHttpMessageConverter"/> -->
+<!-- 				<bean class = "org.springframework.http.converter.StringHttpMessageConverter">
+	                <property name="supportedMediaTypes" value = "text/plain;charset=UTF-8" />
+	                <property name="writeAcceptCharset" value = "false"/>
+	            </bean>
+					
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter">
+						                <property name="supportedMediaTypes" value = "application/json;charset=UTF-8" />
+						                <property name="defaultCharset" value = "UTF-8"/>
+					
+					</bean> -->
+				<bean
+					class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean
+					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+
+			</list>
+		</property>
+	</bean>
+
+
+</beans>

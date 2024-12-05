@@ -1,0 +1,82 @@
+package com.z.tests.magis.tests;
+
+import java.math.BigInteger;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+
+import javax.crypto.Cipher;
+
+import org.apache.commons.codec.binary.Hex;
+
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+
+public class RSAPub2Priv {
+  public static void main(String[] args) throws Exception {
+  
+	try {
+		
+		
+		BigInteger publicKeyModulus = new BigInteger("25396676280826609905029459294149291466171038790968940308781780742573533021502832061017272269226999702636206207177459625582932400940075124496810914318080894823647823014424665430528311557951957891577877882387241491186760101858041131732418919699787879790100749194328860166340290677306155513058078259544164514047810296473448125637628394579111824977040561434441976523972346849024600436476602253892834871128963638446616118553338560596919301579761604485275807298750081903214794270389582067138299912218488951583176522567632931284964266763689160059426199059248682679218815887721177868505133039621998993605943776383566370108457");
+		BigInteger publicKeyExponent = new BigInteger("15923445153965641204320696886581450716945147854795073412395321001771351227345970554332067913008020580451109285733692318458706918031472709167317046557582160446747832453205424831863509929166789778641478555093674414671943472320197264812500203387155099691090985018297560051498983539392819875598051387200043701218021159683478124270967671756485497919213708479327765083309731367042391249238315161397332912152719574046051077354981854151167504054427694334929400680336625136105976522557944618845342003851365670478729121314835368505547655663710567496863326427816219815802652699829859762131661047650198604666474760361848638477233");
+		BigInteger privateKeyModulus =  new BigInteger("25396676280826609905029459294149291466171038790968940308781780742573533021502832061017272269226999702636206207177459625582932400940075124496810914318080894823647823014424665430528311557951957891577877882387241491186760101858041131732418919699787879790100749194328860166340290677306155513058078259544164514047810296473448125637628394579111824977040561434441976523972346849024600436476602253892834871128963638446616118553338560596919301579761604485275807298750081903214794270389582067138299912218488951583176522567632931284964266763689160059426199059248682679218815887721177868505133039621998993605943776383566370108457");
+		BigInteger privateKeyExponent = new BigInteger("65537");
+		String base64Public ="MIICITANBgkqhkiG9w0BAQEFAAOCAg4AMIICCQKCAQEAyS4wjzRyj6awlkCjS2JAgDXGafkxwfVpJLDfonVDXvdZht/f36lhdz6i5rK+e2mU2u5xZKs1URe/8GlAWK5mX+R3L6gDh6LolEow46zRCXMAYuxE9CPOJuCWDLHwCQ0caz2qptvr8cDJGcAQkF00X71V12uOSFuO3csXUftILCYa302ztt+J5AupUAXyGSSb9jLMd6uPXx1ZJi+dodsYpAaqmd8DV//yq7I5t2OMT6bNxpt8k2CAqz8d73pKBHGSswM7GKMW20FbHQS7EDMFKwNh7Zv5DBC+B7FQKS9Zr6QykvZ51KoNImPc6zyf4evR/QuSXI94k7+r0bnjZWz0KQKCAQB+I1LZBzZpMUd4/dAk3Na6TH06Rr9W8EtbcPbXApUaPxZIBah1sNrmjERRR3M9J+boGibIyrwkOzLiRuvMbpTLvRCptbt42MDg8V+T8PAj75IndCKLvMNuBtSt4wcwdaMC7mhINI3MR2cPmSgJjBbhjHH9HnfYkGeUUtktUtNeseyCIjyP6c9EC3l7YTB3YqtS0vamUhwL20kUJ9uzyzTbiVSwkJHVZCj62EB7E6/e9FAPf8/Nv+4eRNnxx6OvLULeyrLVyL60e9/mRLW5nm8UwG2X4hV8971QzW9FzS+APmbJjMwm+0w1xwBX7ilBdGQkAjf01OCcFK6xsauIQxOx";
+		String base64Private ="MIIBOQIBADANBgkqhkiG9w0BAQEFAASCASMwggEfAgEAAoIBAQDJLjCPNHKPprCWQKNLYkCANcZp+THB9WkksN+idUNe91mG39/fqWF3PqLmsr57aZTa7nFkqzVRF7/waUBYrmZf5HcvqAOHouiUSjDjrNEJcwBi7ET0I84m4JYMsfAJDRxrPaqm2+vxwMkZwBCQXTRfvVXXa45IW47dyxdR+0gsJhrfTbO234nkC6lQBfIZJJv2Msx3q49fHVkmL52h2xikBqqZ3wNX//Krsjm3Y4xPps3Gm3yTYICrPx3vekoEcZKzAzsYoxbbQVsdBLsQMwUrA2Htm/kMEL4HsVApL1mvpDKS9nnUqg0iY9zrPJ/h69H9C5Jcj3iTv6vRueNlbPQpAgEAAgMBAAECAQACAQACAQACAQACAQA=";
+		
+		System.out.println(privateKeyExponent);
+		System.out.println(privateKeyExponent.toString(16));
+		System.out.println(Hex.encodeHexString(privateKeyExponent.toByteArray()));
+		System.out.println("\n------------ ENCYPTION COMING SOON -------------------");
+		String data = "mehmet den selamlar";
+		String b64encStr  ="";
+//		RSAPublicKeySpec rsaPublicKeySpec_2 = new RSAPublicKeySpec(publicKeyModulus, publicKeyExponent);
+
+		
+//		KeyFactory fact = KeyFactory.getInstance("RSA");
+//		PublicKey pubKey = fact.generatePublic(rsaPublicKeySpec_2);
+		
+//		System.out.println("ddd:" + pubKey.getFormat());
+//		byte[] a = pubKey.getEncoded();
+//		System.out.println("ddd:" + Base64.encode(a));
+/*
+		RSAPublicKeyImpl pubKey = new RSAPublicKeyImpl(Base64.decode(base64Public));
+		
+		Cipher cipher = Cipher.getInstance("RSA");
+	
+		cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+		byte[] encryptedData = cipher.doFinal(data.getBytes());
+		b64encStr =  Base64.encode(encryptedData);
+		System.out.println("Encypted Data:" + b64encStr);
+	*/	
+		System.out.println("\n------------ DECRYPTION COMING SOON -------------------");
+		//b64encStr="apr2PlmIfVxcmAo+I07whIbuppQGeVe7RjGVdzJzNct+Ggehf/AFqrCbubA82qke6fRoMCfBzhIUGz/xPdLE9lfWHlgOHAoBrdXQMLfP6MZcKHGas6IV/ZR6DvPqTslQqViZEufgCFxFQAfYOaxXUb81gc+x5ysiSlowI93j69TP3dPJRSUTOK3SA/Mzr0lOTrrqJ5gvP76BIcNI+JtCYcfLZmZPWUa8R1m8G0vwNnV2QbaWHOsygfPbyANV+rK/vknbjgRKeO+/lNgsDDCdSb2aRjYdx+Z8TfYc50lemRNauj/MNU8Nx5geHv2hmxaDVsNzKuefA0M24x0fz3Qndg==";
+		b64encStr ="MYTnzpMIxhUlqGtihE/W1qAJFW33rBgC0xRgHWc+LiBu0+OT0wNn7ad2zPLb9oIxMSlMD4/n9aH7uKezze3guxbDXS+Z9kAg9DHC4ot8+X4IkAW6Ku6cArjUY2RQnsdcGgj+eHLSnTqzEvnQcU/WsdJBaJjtoRn28O4+8Op5oi9KHF9OQRTASCF28W5yudZ7hCYXxvrMajpvNfxYJdds68ndgertOjUyMpl5s0/U0tBFSQnDJF/I7UlPQZd1In0KuYNP+6I9UuGtwqu2USDnun5tITpcBHwMSLcTClfrkxKY6yVM3+kMIhGM183qeM0OC34qR9ZB0iLQYJ3XfCoS2Q==";
+		b64encStr="v+ReXt80fX6Q5qe9S2a+wmd/7ow7/f4WzVzcxe8LsD0YmdlMkJ+xA6UafJI32aL1sbUJeRc3cNEEjG2QVdY2snef371sABiTxBLEMokgRvWkTicu2nousCTVTihHFsUKBLIaql3IB6I4tDT57cxFHL1fzTC3KgbKJ5lpvxYfI1Cle8J51kskkbzsRF1d5FOJrO9iQLorA1lUga7+8amSOBExx4jfx+YSBmulZPfiZ1Cgy+lwVW7oftlfPFp52O0xMj7V5tnbP59pfcFqaxmTU0tvRRa0KCn8fEq2UEqSg6ZIRr3k1zzqXOk9VV2IXEMJLDfhtMZSz4XymuBRP73YWw==";
+		b64encStr="d2HlO4V+j5TpLqW+/o/nZQvT0daup3XrtSkOcV/3AWg1FVfwOzLipotJBkdf8SVHC2s6EL7COa9LMsnkPIdcEwfKdM0HuIUPsfW/4lNNVlVEKD82vkBBvvcWc/7gqLPb0KHhx4IKcaA7RlgIBlvlgQsZvytqumHgLMfw/eUXoHuxqU42OgvgLr/wM1+/GKhd6oLgJ77j7f8q0gDs9cQMvnBKwOziJh1j9kBCpnGs3+MlBSG6mFoSnD6Hp8/UDEQKkLMayUpBnwwc+3Txgd7KtqCI5YeG0cpFhlu+zTkzLKT3EI/XX909DvF7Xca9tt25wTFKRA9j1rbWcR8XLIAzCg==";
+		b64encStr ="GvRZLsqJ7a7Hlu8lcXpb5/Q0QF4j0imKdgnoEWfyuKkHj73A+ocv9rx8RUjyXo6e/b/A+pkFjtzbmZyRGL2a3hGIUwOY/4LaVmh21l/v3pBfaa/f9RV8js81A3Wo9QCxtDoHkuEtC8/12vXTtCaPmqPCMp5PnDDeCQ0bJmB0iVHvWB9Zln5HresGaLdx/Hg8855DucOpcFMjIehj7l4/fB5SD1Yo4hRrJmNK6Y34LAmlz9DceW4b/3MYKaZgdZ0l4L9oWA7hYlzcIZUKh8EV4HbeNhKOcuv+6lkFqXSy77S7XfD9Y1enhc7X1QXRA0PPRfyfCf17wt5F0+S1puX6QQ==";
+		//RSAPrivateKeySpec rsaPrivateKeySpec2 = new RSAPrivateKeySpec(privateKeyModulus, privateKeyExponent);
+		PKCS8EncodedKeySpec rsaPrivateKeySpec2 = new PKCS8EncodedKeySpec(Base64.decode(base64Private));
+		KeyFactory fact2 = KeyFactory.getInstance("RSA");
+		PrivateKey privKey =  fact2.generatePrivate(rsaPrivateKeySpec2);
+		System.out.println("dkdk:" + Base64.encode(privKey.getEncoded()));
+		System.out.println("Format:" + privKey.getFormat() + " algorithm:" + privKey.getAlgorithm());
+		
+		Cipher cipherPriv = Cipher.getInstance("RSA");
+		cipherPriv.init(Cipher.DECRYPT_MODE,privKey);
+
+		byte[] descryptedData= cipherPriv.doFinal(Base64.decode(b64encStr));
+		System.out.println("Decrypted Data:" + new String(descryptedData));
+
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+  }
+}
+
+/*
+System.out.println("Public Key Modulus:" +  rsaPublicKeySpec.getModulus());
+System.out.println("Public Key Exponent:" + rsaPublicKeySpec.getPublicExponent());
+System.out.println("Private Key Modulus:" +  rsaPrivateKeySpec.getModulus());
+System.out.println("Private Key Exponent:" + rsaPrivateKeySpec.getPrivateExponent());
+*/
