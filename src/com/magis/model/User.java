@@ -6,7 +6,7 @@ public class User {
 	String password ="";
 	String test ="";
 
-	
+
 	String name="";
 	String surname="";
 	String roleName="";
