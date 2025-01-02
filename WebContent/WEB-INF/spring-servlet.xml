@@ -84,8 +84,8 @@
         <property name="locations">
             <list>
 				<value>file:///#{systemProperties['app.conf.dir']}/medical/conf/application.properties</value>
-<!--              	<value>classpath:application.properties</value> 
-                <value>file://home/ddddd/conf/application.properties</value> -->
+             	<value>classpath:application.properties</value> 
+ <!--                <value>file://home/ddddd/conf/application.properties</value> -->
             </list>
         </property>
     </bean> 	
