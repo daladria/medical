@@ -67,8 +67,8 @@
         <beans:property name="locations">
             <beans:list>
 				<beans:value>file:///#{systemProperties['app.conf.dir']}/medical/conf/application.properties</beans:value>
-<!--              	<beans:value>classpath:application.properties</beans:value> 
-                <beans:value>file://home/ddddd/conf/application.properties</beans:value> -->
+              	<beans:value>classpath:application.properties</beans:value> 
+<!--                <beans:value>file://home/ddddd/conf/application.properties</beans:value> -->
             </beans:list>
         </beans:property>
     </beans:bean> 	
